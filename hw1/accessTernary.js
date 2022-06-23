@@ -1,9 +1,5 @@
-function hasAccessTern(user) {
-    const isAgeOk = user.age >= 18 && user.age <= 35;
-    const isAdmin = user.isAdmin;
-    const paid = user.paid;
-    const blocked = user.blocked;
-    const badUsername = user.badUsername;
+function hasAccessTern({ age, isAdmin, paid, blocked, badUsername }) {
+    const isAgeOk = age >= 18 && age <= 35;
     return isAgeOk && (isAdmin || paid && !blocked && !badUsername) ? true : false;
 }
 
