@@ -27,7 +27,8 @@ let avgSalary = employees.reduce((acc, item) => {
 }, 0) / employees.length;
 console.log('Средняя зарплата ($): ' + avgSalary);
 
-let employeesBySalary = employees.sort((a, b) => {
+let employeesBySalary = employees.slice();
+employeesBySalary.sort((a, b) => {
     return a.salary - b.salary;
 });
 console.log('Сотрудники по возрастанию з/п:');
