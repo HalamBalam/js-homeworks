@@ -1,5 +1,5 @@
 function Calc() {
-    let ops = [];
+    const ops = [];
     let opHistory = [];
 
     this.addOperation = (operation, func) => {
@@ -13,15 +13,15 @@ function Calc() {
     this.addOperation('-', (a, b) => a - b);
 
     this.operation = (str) => {
-        let arr = str.split(' ');
+        const arr = str.split(' ');
         if (arr.length !== 3) {
             return NaN
         }
-        let a = Number(arr[0]);
-        let b = Number(arr[2]);
+        const a = Number(arr[0]);
+        const b = Number(arr[2]);
         opHistory.push({ operation: arr[1], operands: [a, b] });
 
-        let op = ops.find((item) => item.operation === arr[1]);
+        const op = ops.find((item) => item.operation === arr[1]);
         if (!op) {
             return a
         }

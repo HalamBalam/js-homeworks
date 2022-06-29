@@ -1,10 +1,10 @@
 const MoneyBox = function () {
-    let coin = 0;
+    let coins = 0;
     this.addCoin = () => {
-        coin++
+        coins++
     }
     this.getAmount = () => {
-        return coin
+        return coins
     }
 }
 

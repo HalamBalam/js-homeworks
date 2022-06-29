@@ -1,5 +1,5 @@
 function cache() {
-    let arr = []
+    const arr = []
     return (a, n) => {
         let fromCache = true;
         if (!(arr[a] && arr[a][n])) {

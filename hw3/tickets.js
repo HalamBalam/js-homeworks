@@ -1,10 +1,10 @@
 function TicketWindow() {
     let cash = 0;
-    let tickets = [];
-    let events = [];
+    const tickets = [];
+    const events = [];
 
     this.createEvent = (name, price) => {
-        let event = events.find((item) => item.name === name);
+        const event = events.find((item) => item.name === name);
         if (!event) {
             events.push({ name, price });
         }
@@ -12,7 +12,7 @@ function TicketWindow() {
 
     this.buyTicket = (eventName) => {
         let ticketNumber = '';
-        let event = events.find((item) => item.name === eventName);
+        const event = events.find((item) => item.name === eventName);
         if (event) {
             ticketNumber = String(tickets.length + 1).padStart(6, '0');
             tickets.push(event.price);
@@ -22,8 +22,8 @@ function TicketWindow() {
     }
 
     this.returnTicket = (ticketNumber) => {
-        let i = Number(ticketNumber) - 1;
-        let price = tickets[i];
+        const i = Number(ticketNumber) - 1;
+        const price = tickets[i];
         if (price) {
             cash -= price;
             tickets[i] = undefined;
