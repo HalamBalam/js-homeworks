@@ -4,7 +4,7 @@ const Ship = function (name, age, color) {
     this.color = color;
 }
 
-const MotorShip = function(enginePower, caseMaterial) {
+const MotorShip = function (enginePower, caseMaterial) {
     this.enginePower = enginePower;
     this.caseMaterial = caseMaterial;
 }
@@ -20,34 +20,28 @@ SailingShip.prototype = new Ship();
 const Shipyard = function (type) {
     this.type = type;
 
-    this.build = function (name, color, { enginePower, caseMaterial, masts, sailsArea }) {
+    this.build = function (name, color) {
         const ship = new this.type();
         ship.name = name;
         ship.age = 0;
         ship.color = color;
-        if (ship instanceof MotorShip) {
-            ship.enginePower = enginePower;
-            ship.caseMaterial = caseMaterial;
-        } else if (ship instanceof SailingShip) {
-            ship.masts = masts;
-            ship.sailsArea = sailsArea;
-        }
         return ship;
     }
 
-    this.repair = function(ship) {
+    this.repair = function (ship) {
         if (!(ship instanceof this.type)) {
             console.log('Данная верфь не занимается ремонтом кораблей такого типа.');
             return false;
         }
+        ship.lastRepair = new Date();
         return true;
     }
 
-    this.paint = function(ship, color) {
+    this.paint = function (ship, color) {
         ship.color = color;
     }
 
-    this.change = function(ship) {
+    this.change = function (ship) {
         if (!(ship instanceof this.type)) {
             console.log('Данная верфь не занимается обменом кораблей такого типа.');
             return false;
@@ -57,12 +51,32 @@ const Shipyard = function (type) {
     }
 }
 
+const MotorShipyard = function () {
+    this.build = function (name, color, enginePower, caseMaterial) {
+        const ship = MotorShipyard.prototype.build(name, color);
+        ship.enginePower = enginePower;
+        ship.caseMaterial = caseMaterial;
+        return ship;
+    }
+}
+MotorShipyard.prototype = new Shipyard(MotorShip);
 
-const motorShipyard = new Shipyard(MotorShip);
-const motorShip = motorShipyard.build('Titanic', 'black', { enginePower: 55_000, caseMaterial: 'titan' });
+const SailingShipyard = function () {
+    this.build = function (name, color, masts, sailsArea) {
+        const ship = SailingShipyard.prototype.build(name, color);
+        ship.masts = masts;
+        ship.sailsArea = sailsArea;
+        return ship;
+    }
+}
+SailingShipyard.prototype = new Shipyard(SailingShip);
 
-const sailingShipyard = new Shipyard(SailingShip);
-const sailingShip = sailingShipyard.build('Ever Given', 'green', { masts: 5, sailsArea: 75 });
+
+const motorShipyard = new MotorShipyard();
+const motorShip = motorShipyard.build('Titanic', 'black', 55_000, 'titan');
+
+const sailingShipyard = new SailingShipyard();
+const sailingShip = sailingShipyard.build('Ever Given', 'green', 5, 75);
 
 if (motorShipyard.repair(motorShip)) {
     console.log("Корабль " + motorShip.name + " успешно отремонтирован");
