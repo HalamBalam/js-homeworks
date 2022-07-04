@@ -1,7 +1,8 @@
-const Ship = function (name, age, color) {
+const Ship = function (name, age, color, lastRepair) {
     this.name = name;
     this.age = age;
     this.color = color;
+    this.lastRepair = lastRepair;
 }
 
 const MotorShip = function (enginePower, caseMaterial) {
