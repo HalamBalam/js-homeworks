@@ -1,24 +1,23 @@
-function showList(nestedList) {
-    const ul = document.createElement('ul');
-    createHTMLList(nestedList, ul);
+function showList(nestedList, parentElement, listTag = 'ul', itemTag = 'li') {
+    const listElement = document.createElement(listTag);
+    createHTMLList(nestedList, listElement, listTag, itemTag);
 
-    const body = document.querySelector('body');
-    body.append(ul);
+    parentElement.append(listElement);
 }
 
-function createHTMLList(nestedList, ul) {
+function createHTMLList(nestedList, listElement, listTag, itemTag) {
     nestedList.forEach(item => {
-        if (typeof item === 'string') {
-            const li = document.createElement('li');
-            li.textContent = item;
-            ul.append(li);
+        if (Array.isArray(item)) {
+            const nestedUl = document.createElement(listTag);
+            createHTMLList(item, nestedUl, listTag, itemTag);
+            listElement.append(nestedUl);
         } else {
-            const nestedUl = document.createElement('ul');
-            createHTMLList(item, nestedUl);
-            ul.append(nestedUl);
+            const li = document.createElement(itemTag);
+            li.textContent = item;
+            listElement.append(li);
         }
     })
 }
 
 const nestedList = ["Item", ["Item2", ["Item3"]]];
-showList(nestedList);
+showList(nestedList, document.querySelector('body'));
