@@ -1,88 +1,80 @@
 class Calculator {
     constructor() {
         this.funcs = new Map();
-        this.addFunc('+', (a, b) => a + b);
-        this.addFunc('-', (a, b) => a - b);
-        this.addFunc('*', (a, b) => a * b);
-        this.addFunc('/', (a, b) => a / b);
+        this.addFunc('+', 'a + b');
+        this.addFunc('-', 'a - b');
+        this.addFunc('*', 'a * b');
+        this.addFunc('/', 'a / b');
 
-        this.init();
-        this.displayInfo = String(this.currentOperand);
+        this.reset();
     }
 
-    init() {
+    reset() {
         this.previousOperand = 0;
         this.currentOperand = 0;
         this.currentFunc = null;
-        this.separator = false;
+        this.hasSeparator = false;
+        this.updateDisplayInfo();
     }
-    calc(nextFunc = null) {
-        if (this.currentFunc) {
-            this.currentOperand = this.currentFunc.func(this.previousOperand, this.currentOperand);
-            this.previousOperand = 0;
+    calc() {
+        if (!this.currentFunc) {
+            return;
         }
-        this.currentFunc = nextFunc;
+        const result = this.currentFunc.func(this.previousOperand, this.currentOperand);
+        this.reset();
+
+        this.currentOperand = result;
+        this.updateDisplayInfo();
     }
     backspace() {
         if ((!this.currentFunc || this.previousOperand !== 0) && (this.currentOperand > 0)) {
             this.currentOperand = Math.floor(this.currentOperand / 10);
+            this.updateDisplayInfo();
         }
     }
-    separatorPress() {
+    separator() {
         if (!this.currentFunc || this.previousOperand !== 0) {
-            this.separator = true;
+            this.hasSeparator = true;
+            this.updateDisplayInfo();
         }
     }
+    number(numString) {
+        if (this.currentFunc && this.previousOperand === 0) {
+            this.setPreviousOperandToCurrent();
+        }
+        this.currentOperand = Number(String(this.currentOperand) + this.separatorString() + numString);
+        this.updateDisplayInfo();
+    }
+
     separatorString() {
         let result = '';
-        if (this.separator && this.currentOperand === Math.floor(this.currentOperand)) {
+        if (this.hasSeparator && this.currentOperand === Math.floor(this.currentOperand)) {
             result = '.';
         }
         return result;
     }
-    addFunc(name, func) {
-        this.funcs.set(name, func);
+    hasFunc(name) {
+        return this.funcs.has(name);
     }
-    buttonPress(buttonValue) {
-        switch (buttonValue) {
-            case 'c':
-            case 'C':
-                this.init();
-                break;
-            case 'Enter':
-            case '=':
-                this.calc();
-                break;
-            case 'Backspace':
-            case '←':
-                this.backspace();
-                break;
-            case '+':
-            case '-':
-            case '*':
-            case '/':
-                this.calc({ name: buttonValue, func: this.funcs.get(buttonValue) });
-                break;
-            case '.':
-                this.separatorPress();
-                break;
-            default:
-                if (this.funcs.get(buttonValue)) {
-                    this.calc({ name: buttonValue, func: this.funcs.get(buttonValue) });
-                    break;
-                } else if (!Number.isInteger(Number(buttonValue))) {
-                    return;
-                }
-                if (this.currentFunc && this.previousOperand === 0) {
-                    this.previousOperand = this.currentOperand;
-                    this.currentOperand = 0;
-                    this.separator = false;
-                }
-                this.currentOperand = Number(String(this.currentOperand) + this.separatorString() + buttonValue);
+    addFunc(name, expression) {
+        this.funcs.set(name, new Function('a', 'b', 'return ' + expression));
+    }
+    setNewFunc(funcName) {
+        if (this.currentFunc) {
+            this.calc();
         }
+        this.currentFunc = { name: funcName, func: this.funcs.get(funcName) };
+        this.updateDisplayInfo();
+    }
+    setPreviousOperandToCurrent() {
+        this.previousOperand = this.currentOperand;
+        this.currentOperand = 0;
+        this.hasSeparator = false;
+    }
+    updateDisplayInfo() {
         let funcName = '';
         if (this.currentFunc && this.previousOperand === 0) {
-            funcName = this.currentFunc.name;
+            funcName = ' ' + this.currentFunc.name;
         }
         this.displayInfo = String(this.currentOperand) + this.separatorString() + funcName;
     }
